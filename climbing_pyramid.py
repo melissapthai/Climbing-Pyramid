@@ -65,6 +65,12 @@ def sort_by_grade(climbing_pyramid: dict) -> dict:
     return climbing_pyramid_sorted
 
 
+def save_climbing_pyramid_as_csv(climbing_pyramid: dict):
+    with open(TICKS_FILE + '_pyramid.csv', 'w') as f:
+        for key in climbing_pyramid.keys():
+            f.write("%s,%s\n" % (key, ", ".join(climbing_pyramid[key])))
+
+
 if __name__ == "__main__":
     climbing_pyramid = defaultdict(set)
     parser = argparse.ArgumentParser()
@@ -84,3 +90,4 @@ if __name__ == "__main__":
     climbing_pyramid_sorted = sort_by_grade(climbing_pyramid)
 
     print_climbing_pyramid(climbing_pyramid_sorted)
+    save_climbing_pyramid_as_csv(climbing_pyramid_sorted)
