@@ -16,7 +16,7 @@ GRADES_ORDER = [
 ]
 LEAD_SENDS = ["Redpoint", "Onsight", "Flash", "Pinkpoint"]
 PROTECTION_RATINGS = ["PG13", "R", "X"]
-TICKS_FILE = "ticks.csv"
+TICKS_FILE = "ticks"
 
 
 def get_grade(grade: str) -> str:
@@ -60,13 +60,14 @@ def print_climbing_pyramid(climbing_pyramid: dict):
 
 def sort_by_grade(climbing_pyramid: dict) -> dict:
     climbing_pyramid_sorted = {
-        key: climbing_pyramid[key] for key in GRADES_ORDER if key in climbing_pyramid}
+        key: climbing_pyramid[key] for key in list(reversed(GRADES_ORDER)) if key in climbing_pyramid}
 
     return climbing_pyramid_sorted
 
 
-def save_climbing_pyramid_as_csv(climbing_pyramid: dict):
-    with open(TICKS_FILE + '_pyramid.csv', 'w') as f:
+def save_climbing_pyramid_as_csv(climbing_pyramid: dict, route_type: str):
+    climbing_pyramid_filename = TICKS_FILE + "_" + route_type + "_pyramid.csv"
+    with open(climbing_pyramid_filename, "w") as f:
         for key in climbing_pyramid.keys():
             f.write("%s,%s\n" % (key, ", ".join(climbing_pyramid[key])))
 
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     route_type = args.type if args.type else DEFAULT_ROUTE_TYPE
 
-    with open(TICKS_FILE, newline='') as csvfile:
+    with open(TICKS_FILE + ".csv", newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             if is_requested_route_type(route_type, row["Route Type"]) and row["Lead Style"] in LEAD_SENDS:
@@ -90,4 +91,4 @@ if __name__ == "__main__":
     climbing_pyramid_sorted = sort_by_grade(climbing_pyramid)
 
     print_climbing_pyramid(climbing_pyramid_sorted)
-    save_climbing_pyramid_as_csv(climbing_pyramid_sorted)
+    save_climbing_pyramid_as_csv(climbing_pyramid_sorted, route_type)
